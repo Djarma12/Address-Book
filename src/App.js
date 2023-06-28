@@ -1,407 +1,126 @@
 import { useState } from "react";
 import "./index.css";
+import Header from "./components/Header";
+import SearchBar from "./components/SearchBar";
+import AddressBook from "./components/AdressBook";
+import Footer from "./components/Footer";
+import AddContact from "./components/AddContact";
 
-const addressBook = [
+const addressBookArr = [
   {
     id: 118836,
-    lastName: "Virkkula",
-    firstName: "Seppo",
-    address: "Martinpolku 60",
-    city: "Kouvola",
-    postalCode: 45130,
+    lastName: "Markovic",
+    firstName: "Marko",
+    address: "Smederevska 60",
+    city: "Beograd",
+    postalCode: 101801,
   },
   {
     id: 115636,
-    lastName: "Asikainen",
+    lastName: "Knezevic",
     firstName: "Tanja",
-    address: "Kiesitie 57 A 2",
-    city: "Tuusula",
-    postalCode: 10210,
+    address: "Futoska 57 A",
+    city: "Novi Sad",
+    postalCode: 400107,
   },
   {
     id: 112836,
-    lastName: "Mäkelä",
-    firstName: "Sonja",
-    address: "Ilmalankuja 41",
-    city: "Pori",
+    lastName: "Jelena",
+    firstName: "Garcia",
+    address: "Obrenovićeva ulica 25",
+    city: "Niš",
     postalCode: 28840,
   },
   {
     id: 198336,
-    lastName: "Rauhala",
-    firstName: "Arto",
-    address: "Rauhankatu 68",
-    city: "Helsinki",
+    lastName: "Stefan",
+    firstName: "Ilić",
+    address: "Karađorđeva ulica 10",
+    city: "Kragujevac",
     postalCode: 10810,
   },
   {
     id: 196936,
-    lastName: "Peltonen",
-    firstName: "Janne",
-    address: "Vanhamaantie 62",
-    city: "Kotka",
-    postalCode: 48300,
+    lastName: "Milica",
+    firstName: "Benjamin",
+    address: "Trg Republike 7",
+    city: "Subotica",
+    postalCode: 24000,
   },
 ];
 
 export default function App() {
-  const [contacts, setContacts] = useState(addressBook);
-  const [showBar, setShowBar] = useState(true);
-  const [sortBy, setSortBy] = useState("none");
-  const [query, setQuery] = useState("");
-  const [showEdit, setShowEdit] = useState(false);
-  const [id, setId] = useState("");
+  const [addressBook, setAddressBook] = useState(addressBookArr);
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("noOrder");
+  const [addContact, setAddContact] = useState(false);
+  const [activeAddress, setActiveAddress] = useState(null);
 
-  function handleToggle() {
-    setShowBar((curState) => !curState);
-    setShowEdit(false);
+  function handleSearch(val) {
+    setSearch(val);
   }
 
-  function handleAddContact(newContact) {
-    setContacts((contact) => [...contact, newContact]);
-    setShowBar(true);
+  function handleSort(val) {
+    setSortBy(val);
+    setActiveAddress(null);
+  }
+  function handleAddContact(val) {
+    setAddContact(val);
+    setActiveAddress(null);
   }
 
-  function handleShowEdit(id) {
-    setShowEdit((curState) => !curState);
-    setId(id);
-    setShowBar(true);
+  function handleAddressBook(newAddress) {
+    setAddressBook((addresses) => [...addresses, newAddress]);
   }
 
-  function handleEditContact(editContact) {
-    setContacts((contacts) =>
-      contacts.map((contact) =>
-        contact.id === editContact.id
-          ? {
-              ...contact,
-              address: editContact.address,
-              city: editContact.city,
-              postalCode: editContact.postalCode,
-            }
-          : contact
+  function handleActiveAddress(activeAddress) {
+    setActiveAddress((address) =>
+      address?.id === activeAddress.id ? null : activeAddress
+    );
+    setAddContact(false);
+  }
+
+  function handleEditAddressBook(editAddress) {
+    setAddressBook((addressBook) =>
+      addressBook.map((address) =>
+        address.id === editAddress.id ? editAddress : address
       )
     );
-    setShowEdit(false);
+    setActiveAddress(null);
   }
 
-  function handleDeleteContact(id) {
-    setContacts((contacts) => contacts.filter((contact) => contact.id !== id));
-    setShowEdit(false);
+  function handleDeleteAddressBook(id) {
+    setAddressBook((addressBook) =>
+      addressBook.filter((address) => address.id !== id)
+    );
   }
 
   return (
     <div className="container">
       <Header />
-      {showBar && (
+      {addContact ? (
+        <AddContact
+          onAddContact={handleAddContact}
+          onAddressBook={handleAddressBook}
+        />
+      ) : (
         <SearchBar
-          contacts={contacts}
-          onToggle={handleToggle}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          setQuery={setQuery}
+          onSearch={handleSearch}
+          onSort={handleSort}
+          onAddContact={handleAddContact}
         />
       )}
-      {!showBar && (
-        <InputForm onToggle={handleToggle} onAddContact={handleAddContact} />
-      )}
-      {contacts.length === 0 && (
-        <div className="empty-book">
-          <h2>You have no contacts on AddressBook. Fill it up!</h2>
-        </div>
-      )}
+
       <AddressBook
-        contacts={contacts}
-        query={query}
+        search={search}
+        addressBook={addressBook}
         sortBy={sortBy}
-        showEdit={showEdit}
-        onShowEdit={handleShowEdit}
-        id={id}
-        onToggle={handleToggle}
-        onEditContact={handleEditContact}
-        onDeleteContact={handleDeleteContact}
+        activeAddress={activeAddress}
+        onActiveAddress={handleActiveAddress}
+        onEditAddressBook={handleEditAddressBook}
+        onDeleteAddressBook={handleDeleteAddressBook}
       />
       <Footer />
     </div>
-  );
-}
-
-// Reusable Button Component
-function Button({ children, className, onClick }) {
-  return (
-    <button className={className} onClick={onClick}>
-      {children}
-    </button>
-  );
-}
-
-function Header() {
-  return (
-    <div className="header ">
-      <h1>AddressBook</h1>
-      <h6>&mdash; Keep your contacts in order &mdash;</h6>
-    </div>
-  );
-}
-
-function SearchBar({ onToggle, sortBy, setSortBy, setQuery }) {
-  return (
-    <div className="searchbar">
-      <input
-        type="text"
-        placeholder="Search... "
-        onChange={(e) => setQuery(e.target.value.toLowerCase())}
-      />
-
-      <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-        <option value="none">No spesific order</option>
-        <option value="asc">Alphabetical ascending</option>
-        <option value="desc">Alphabetical descending</option>
-      </select>
-      <Button className={"button"} onClick={onToggle}>
-        Add contact
-      </Button>
-    </div>
-  );
-}
-
-function InputForm({ onToggle, onAddContact }) {
-  const [lastName, setLastName] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [postalCode, setPostalCode] = useState("");
-
-  const id = crypto.randomUUID();
-
-  const newContact = {
-    id,
-    lastName,
-    firstName,
-    address,
-    city,
-    postalCode,
-  };
-
-  function handleSubmit(e) {
-    if (!firstName || !lastName) return;
-    e.preventDefault();
-    onAddContact(newContact);
-  }
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <div className="form-add-contact">
-        <label>First name</label>
-        <input
-          type="text"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-        />
-
-        <label>Last name</label>
-        <input
-          type="text"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-        />
-
-        <label>Address</label>
-        <input
-          type="text"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-        />
-
-        <label>City</label>
-        <input
-          type="text"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-        />
-
-        <label>Postal code</label>
-        <input
-          type="text"
-          value={postalCode}
-          onChange={(e) => setPostalCode(e.target.value)}
-        />
-        <Button
-          className={"button"}
-          onClick={!firstName || !lastName ? onToggle : handleSubmit}
-        >
-          Add
-        </Button>
-
-        <Button className={"button-outline"} onClick={onToggle}>
-          Close
-        </Button>
-      </div>
-    </form>
-  );
-}
-
-function EditForm({ item, onEditContact, onDeleteContact }) {
-  let [address, setAddress] = useState("");
-  let [city, setCity] = useState("");
-  let [postalCode, setPostalCode] = useState("");
-
-  const id = item.id;
-
-  address = address.length > 0 ? address : item.address;
-  city = city.length > 0 ? city : item.city;
-  postalCode = postalCode.length > 0 ? postalCode : item.postalCode;
-
-  const editContact = {
-    id,
-    address,
-    city,
-    postalCode,
-  };
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    onEditContact(editContact);
-  }
-
-  return (
-    <div className="form-edit-contact-container">
-      <form onSubmit={handleSubmit}>
-        <div className="form-edit-contact">
-          <label>Address</label>
-          <input
-            type="text"
-            placeholder={item.address}
-            onChange={(e) => setAddress(e.target.value)}
-          />
-
-          <label>City</label>
-          <input
-            type="text"
-            // value={city}
-            placeholder={item.city}
-            onChange={(e) => setCity(e.target.value)}
-          />
-
-          <label>Postal code</label>
-          <input
-            type="text"
-            // value={postalCode}
-            placeholder={item.postalCode}
-            onChange={(e) => setPostalCode(e.target.value)}
-          />
-          <Button className={"button"}>Save</Button>
-        </div>
-        <div className="delete">
-          <Button
-            className={"button-outline"}
-            onClick={() => onDeleteContact(id)}
-          >
-            Delete
-          </Button>
-        </div>
-      </form>
-    </div>
-  );
-}
-
-function AddressBook({
-  contacts,
-  sortBy,
-  query,
-  showEdit,
-  onShowEdit,
-  id,
-  onToggle,
-  onEditContact,
-  onDeleteContact,
-}) {
-  let sortedContacts;
-
-  if (sortBy === "none") sortedContacts = contacts;
-
-  if (sortBy === "asc")
-    sortedContacts = contacts
-      .slice()
-      .sort((a, b) => a.lastName.localeCompare(b.lastName));
-
-  if (sortBy === "desc")
-    sortedContacts = contacts
-      .slice()
-      .sort((b, a) => a.lastName.localeCompare(b.lastName));
-
-  if (query !== "")
-    sortedContacts = contacts.filter((contact) =>
-      contact.lastName.toLowerCase().includes(query)
-    );
-
-  return (
-    <div className="addressbook">
-      <ul>
-        {sortedContacts.map((contact, index) => (
-          <AddressBookItem
-            num={index}
-            item={contact}
-            key={contact.id}
-            showEdit={showEdit}
-            onShowEdit={onShowEdit}
-            id={id}
-            onToggle={onToggle}
-            onEditContact={onEditContact}
-            onDeleteContact={onDeleteContact}
-          />
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function AddressBookItem({
-  num,
-  item,
-  showEdit,
-  onShowEdit,
-  id,
-  onEditContact,
-  onDeleteContact,
-}) {
-  return (
-    <li
-      className={`addressbook ${showEdit && id === item.id ? "selected" : ""}`}
-    >
-      <span className="running-number">
-        {num < 9 ? `0${num + 1}` : num + 1}
-      </span>
-      <h3>
-        {item.lastName}, {item.firstName}
-      </h3>
-      <p>{item.address}</p>
-      <p>
-        {item.postalCode}&nbsp;
-        {item.city}
-      </p>
-      <input
-        type="checkbox"
-        id={item.id}
-        name="contact"
-        value={showEdit}
-        onChange={() => onShowEdit(item.id)}
-        checked={id === item.id && showEdit}
-      />
-      {showEdit && id === item.id && (
-        <EditForm
-          item={item}
-          onEditContact={onEditContact}
-          onDeleteContact={onDeleteContact}
-        />
-      )}
-    </li>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className="footer">
-      <p>2023 Ⓒopyright Kitupala | All Rights Reserved</p>
-    </footer>
   );
 }
