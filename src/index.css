@@ -52,10 +52,6 @@ body {
   font-size: 3.6rem;
   margin-top: 2rem;
   margin-bottom: 3rem;
-
-  @media (max-width: 45rem) {
-    font-size: 1.4rem;
-  }
 }
 
 .header h6 {
@@ -63,10 +59,6 @@ body {
   text-transform: uppercase;
   letter-spacing: 5px;
   font-weight: 400;
-
-  @media (max-width: 45rem) {
-    font-size: 1rem;
-  }
 }
 
 .empty-book {
@@ -89,20 +81,6 @@ body {
   transition: 0.5s;
   background-color: #fff4e6;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-
-  @media only screen and (max-width: 45rem) {
-    grid-template-columns: 1fr;
-    row-gap: 1rem;
-    justify-items: center;
-  }
-}
-
-.searchbar input,
-.searchbar select,
-.searchbar button {
-  @media only screen and (max-width: 45rem) {
-    max-width: 20rem;
-  }
 }
 
 .button,
@@ -148,26 +126,6 @@ body {
   border-radius: 7px;
   background-color: #fff4e6;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-
-  @media only screen and (max-width: 45rem) {
-    justify-content: center;
-    grid-template-columns: 10px 1fr 4rem;
-    grid-template-rows: repeat(2, 1fr);
-    column-gap: 2rem;
-  }
-}
-
-.addressbook li p {
-  @media only screen and (max-width: 45rem) {
-    grid-column: 2;
-  }
-}
-
-.addressbook li input {
-  @media only screen and (max-width: 45rem) {
-    grid-row: 2;
-    grid-column: 3;
-  }
 }
 
 .selected {
@@ -198,13 +156,6 @@ form {
   margin-bottom: 1.6rem;
   padding: 1.2rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-
-  @media only screen and (max-width: 45rem) {
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(6, auto);
-    justify-items: center;
-    gap: 1.2rem;
-  }
 }
 
 .form-edit-contact-container {
@@ -219,35 +170,6 @@ form {
   gap: 1.2rem;
   padding: 1.2rem;
   padding-bottom: 0;
-
-  @media (max-width: 45rem) {
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(7, 1fr);
-    justify-items: center;
-    gap: 1.2rem;
-  }
-}
-
-.form-edit-contact label {
-  @media only screen and (max-width: 45rem) {
-    grid-column: 1;
-  }
-}
-
-@media only screen and (max-width: 45rem) {
-  .addressbook .form-edit-contact input {
-    grid-column: 1;
-  }
-
-  .addressbook .form-edit-contact input:nth-child(2) {
-    grid-row: 2;
-  }
-  .addressbook .form-edit-contact input:nth-child(4) {
-    grid-row: 4;
-  }
-  .addressbook .form-edit-contact input:nth-child(6) {
-    grid-row: 6;
-  }
 }
 
 .delete {
@@ -298,10 +220,6 @@ form .button,
 form .button-outline {
   margin-top: 0.2rem;
   grid-column: 4;
-
-  @media only screen and (max-width: 45rem) {
-    grid-column: 1;
-  }
 }
 
 form h2 {
