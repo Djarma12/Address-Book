@@ -102,7 +102,12 @@ function EditContact({ address, onEditAddressBook, onDeleteAddressBook }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    onEditAddressBook({ ...address, address: Address, postalCode, city });
+    onEditAddressBook({
+      ...address,
+      address: Address || address.address,
+      postalCode: postalCode || address.postalCode,
+      city: city || address.city,
+    });
   }
 
   function handleDelete() {
